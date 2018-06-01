@@ -1,12 +1,20 @@
 #define MyAppName "Godot Engine"
-#define MyAppVersion "3.1.dev"
+#ifdef AppWithMono
+  #define MyAppVersion "3.1.dev.mono"
+#else
+  #define MyAppVersion "3.1.dev"
+#endif
 #define MyAppPublisher "Godot Engine contributors"
 #define MyAppURL "https://hugo.pro/projects/godot-builds/"
 #define MyAppExeName "godot.exe"
 
 [Setup]
 AppId={{757DA64B-400E-40F5-B073-A796C34D9D78}
-AppName={#MyAppName}
+#ifdef AppWithMono
+  AppName={#MyAppName} (with Mono support)
+#else
+  AppName={#MyAppName}
+#endif
 AppVersion={#MyAppVersion}
 ; Don't add "version {version}" to the installed app name in the Add/Remove Programs menu
 AppVerName={#MyAppName}
@@ -19,10 +27,18 @@ DefaultDirName={localappdata}\Godot
 DefaultGroupName=Godot Engine
 AllowNoIcons=yes
 UninstallDisplayIcon={app}\godot.exe
-#ifdef App32Bit
-  OutputBaseFilename=godot-setup-nightly-x86
+#ifdef AppWithMono
+  #ifdef App32Bit
+    OutputBaseFilename=godot-setup-nightly-mono-x86
+  #else
+    OutputBaseFilename=godot-setup-nightly-mono-x86_64
+  #endif
 #else
-  OutputBaseFilename=godot-setup-nightly-x86_64
+  #ifdef App32Bit
+    OutputBaseFilename=godot-setup-nightly-x86
+  #else
+    OutputBaseFilename=godot-setup-nightly-x86_64
+  #endif
 #endif
 Compression=lzma
 SolidCompression=yes
