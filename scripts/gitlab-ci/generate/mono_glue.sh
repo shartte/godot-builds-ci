@@ -9,7 +9,6 @@ export DIR
 DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$DIR/../_common.sh"
 
-
 # Build Linux editor (only used to generate the Mono glue)
 scons platform=x11 \
       module_mono_enabled=yes \

@@ -21,10 +21,28 @@ variables:
 
 before_script:
   - "$CI_PROJECT_DIR/scripts/gitlab-ci/before_script.sh"
-  - cd "godot/"
+  - if [[ $BUILD_MONO_LIBRARY == "yes" ]]; then cd "mono/"; else cd "godot/"; fi
 
 after_script:
   - "$CI_PROJECT_DIR/scripts/gitlab-ci/after_script.sh"
+
+# Build Mono for 64-bit and 32-bit Windows
+# This pipeline is manually started when a new Mono version is released
+dependency:mono_windows:
+  stage: build
+  image: fedora:28
+  only:
+    variables:
+      - $BUILD_MONO_LIBRARY == "yes"
+  variables:
+    # The URL to the Mono source tarball to build
+    MONO_SOURCE_TARBALL_URL: https://download.mono-project.com/sources/mono/mono-5.12.0.226.tar.bz2
+  script:
+    - "$CI_PROJECT_DIR/scripts/gitlab-ci/dependency/mono_windows.sh"
+  artifacts:
+    paths:
+      - mono-windows-x86_64.tar.xz
+      - mono-windows-x86.tar.xz
 
 # Build an editor and generate Mono glue
 # This is run two hours before other jobs (so that the glue is available for
@@ -50,6 +68,7 @@ build:linux_editor:
   except:
     variables:
       - $GENERATE_MONO_GLUE == "yes"
+      - $BUILD_MONO_LIBRARY == "yes"
   script:
     - "$CI_PROJECT_DIR/scripts/gitlab-ci/build/linux_editor.sh"
 
@@ -61,6 +80,7 @@ build:linux_templates:
   except:
     variables:
       - $GENERATE_MONO_GLUE == "yes"
+      - $BUILD_MONO_LIBRARY == "yes"
   script:
     - "$CI_PROJECT_DIR/scripts/gitlab-ci/build/linux_templates.sh"
 
@@ -71,6 +91,7 @@ build:html5:
   except:
     variables:
       - $GENERATE_MONO_GLUE == "yes"
+      - $BUILD_MONO_LIBRARY == "yes"
   script:
     - "$CI_PROJECT_DIR/scripts/gitlab-ci/build/html5.sh"
 
@@ -78,6 +99,10 @@ build:html5:
 build:android:
   stage: build
   image: fedora:28
+  except:
+    variables:
+      - $GENERATE_MONO_GLUE == "yes"
+      - $BUILD_MONO_LIBRARY == "yes"
   script:
     - "$CI_PROJECT_DIR/scripts/gitlab-ci/build/android.sh"
 
@@ -88,6 +113,7 @@ build:windows_editor:
   except:
     variables:
       - $GENERATE_MONO_GLUE == "yes"
+      - $BUILD_MONO_LIBRARY == "yes"
   variables:
     # Use only 1 thread for building
     # (required to compile LTO-enabled builds successfully)
@@ -102,6 +128,7 @@ build:windows_templates:
   except:
     variables:
       - $GENERATE_MONO_GLUE == "yes"
+      - $BUILD_MONO_LIBRARY == "yes"
   variables:
     # Use only 1 thread for building
     # (required to compile LTO-enabled builds successfully)
