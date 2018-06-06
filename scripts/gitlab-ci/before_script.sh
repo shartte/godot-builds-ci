@@ -23,7 +23,7 @@ if [[ -f "/etc/redhat-release" ]]; then
       libudev-devel mesa-libGLU-devel mingw32-gcc-c++ mingw64-gcc-c++ \
       mingw32-winpthreads-static mingw64-winpthreads-static yasm \
       wget zip unzip ncurses-compat-libs wine xz openssh-clients make which \
-      mono-devel
+      mono-devel rsync
 else
   # Ubuntu
   apt-key adv --keyserver "hkp://keyserver.ubuntu.com:80" --recv-keys "3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF"
@@ -40,12 +40,12 @@ else
       libx11-dev libxcursor-dev libxinerama-dev libgl1-mesa-dev \
       libglu-dev libasound2-dev libpulse-dev libfreetype6-dev \
       libssl-dev libudev-dev libxrandr-dev libxi-dev yasm \
-      gcc-8 g++-8 mono-devel
+      gcc-8 g++-8 mono-devel rsync
 fi
 
 # Prepare build directories
 # Changing into the build directory is done in `.gitlab-ci.yml`, not here
-if [[ "$BUILD_MONO_LIBRARY" == "yes" ]]; then
+if [[ ! -z "${BUILD_MONO_LIBRARY+x}" ]]; then
   # Build only Mono
   wget -q "$MONO_SOURCE_TARBALL_URL"
   tar xf ./*.tar.bz2
@@ -56,8 +56,7 @@ else
   mkdir -p "$ARTIFACTS_DIR/editor" "$ARTIFACTS_DIR/templates"
 
   # Copy user-supplied modules into the Godot directory
-  # (don't fail in case no modules are present)
-  cp $CI_PROJECT_DIR/modules/* "$GODOT_DIR/modules/" || true
+  rsync -a "$CI_PROJECT_DIR"/modules/ "$GODOT_DIR/modules/"
 
   # Download the generated Mono glue from the last successful `generate:mono_glue` job
   wget \

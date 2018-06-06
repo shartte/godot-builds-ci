@@ -68,7 +68,6 @@ build:linux_editor:
   except:
     variables:
       - $GENERATE_MONO_GLUE == "yes"
-      - $BUILD_MONO_LIBRARY == "yes"
   script:
     - "$CI_PROJECT_DIR/scripts/gitlab-ci/build/linux_editor.sh"
 
@@ -80,7 +79,6 @@ build:linux_templates:
   except:
     variables:
       - $GENERATE_MONO_GLUE == "yes"
-      - $BUILD_MONO_LIBRARY == "yes"
   script:
     - "$CI_PROJECT_DIR/scripts/gitlab-ci/build/linux_templates.sh"
 
@@ -91,7 +89,6 @@ build:html5:
   except:
     variables:
       - $GENERATE_MONO_GLUE == "yes"
-      - $BUILD_MONO_LIBRARY == "yes"
   script:
     - "$CI_PROJECT_DIR/scripts/gitlab-ci/build/html5.sh"
 
@@ -102,7 +99,6 @@ build:android:
   except:
     variables:
       - $GENERATE_MONO_GLUE == "yes"
-      - $BUILD_MONO_LIBRARY == "yes"
   script:
     - "$CI_PROJECT_DIR/scripts/gitlab-ci/build/android.sh"
 
@@ -113,7 +109,6 @@ build:windows_editor:
   except:
     variables:
       - $GENERATE_MONO_GLUE == "yes"
-      - $BUILD_MONO_LIBRARY == "yes"
   variables:
     # Use only 1 thread for building
     # (required to compile LTO-enabled builds successfully)
@@ -128,7 +123,6 @@ build:windows_templates:
   except:
     variables:
       - $GENERATE_MONO_GLUE == "yes"
-      - $BUILD_MONO_LIBRARY == "yes"
   variables:
     # Use only 1 thread for building
     # (required to compile LTO-enabled builds successfully)

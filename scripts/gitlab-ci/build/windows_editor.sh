@@ -9,6 +9,12 @@ export DIR
 DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$DIR/../_common.sh"
 
+# Download and extract Mono builds for Windows from GitLab artifacts
+curl "https://gitlab.com/Calinou/godot-builds-ci/-/jobs/artifacts/master/raw/mono-windows-x86_64.tar.xz?job=dependency:mono_windows" | tar xfJ -
+curl "https://gitlab.com/Calinou/godot-builds-ci/-/jobs/artifacts/master/raw/mono-windows-x86.tar.xz?job=dependency:mono_windows" | tar xfJ -
+export MONO64_PREFIX; MONO64_PREFIX="$(pwd)/mono-windows-x86_64"
+export MONO32_PREFIX; MONO32_PREFIX="$(pwd)/mono-windows-x86"
+
 # Build Windows editor
 for bits in "64" "32"; do
   for mono in "yes" "no"; do

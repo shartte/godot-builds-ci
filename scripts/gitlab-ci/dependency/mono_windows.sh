@@ -32,5 +32,6 @@ make -j$BUILD_THREADS || true
 make install -i
 
 # Create Mono Windows packages
+# Those will be uploaded as artifacts on GitLab
 tar cJf "$CI_PROJECT_DIR/mono-windows-x86_64.tar.xz" "mono-windows-x86_64"
 tar cJf "$CI_PROJECT_DIR/mono-windows-x86.tar.xz" "mono-windows-x86"

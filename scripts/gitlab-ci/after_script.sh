@@ -9,6 +9,9 @@ export DIR
 DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$DIR/_common.sh"
 
+# List files to be deployed for debugging
+ls -lh "$ARTIFACTS_DIR"/*
+
 # Deploy to server using SCP (only from the `master` branch)
 # `$SSH_PRIVATE_KEY` is a secret variable defined in the GitLab CI settings
 if [[ "$CI_COMMIT_REF_NAME" == "master" ]]; then
