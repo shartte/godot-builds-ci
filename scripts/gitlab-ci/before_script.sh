@@ -45,8 +45,8 @@ fi
 
 # Prepare build directories
 # Changing into the build directory is done in `.gitlab-ci.yml`, not here
-if [[ ! -z "${BUILD_MONO_LIBRARY+x}" ]]; then
-  # Build only Mono
+if [[ "$CI_JOB_NAME" == "dependency:mono_windows" ]]; then
+  # Build only Mono for Windows
   wget -q "$MONO_SOURCE_TARBALL_URL"
   tar xf ./*.tar.bz2
   mv mono-*/ "mono/"
