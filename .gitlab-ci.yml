@@ -6,8 +6,8 @@
 # This build script is licensed under CC0 1.0 Universal:
 # https://creativecommons.org/publicdomain/zero/1.0/
 
-# Use only one stage for simplicity's sake
 stages:
+  - generate
   - build
 
 variables:
@@ -46,7 +46,7 @@ dependency:mono_windows:
 # This is run two hours before other jobs (so that the glue is available for
 # all platforms afterwards, including on Travis CI)
 generate:mono_glue:
-  stage: build
+  stage: generate
   image: fedora:28
   script:
     - "$CI_PROJECT_DIR/scripts/gitlab-ci/generate/mono_glue.sh"
