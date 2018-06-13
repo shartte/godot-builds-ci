@@ -15,7 +15,7 @@ variables:
   # This helps people identify where the build comes from
   BUILD_NAME: calinou
   # SCons build flags to use for all platforms
-  SCONS_FLAGS: debug_symbols=no progress=no -j$(($(nproc) * 2))
+  SCONS_FLAGS: debug_symbols=no progress=no -j3
   # The Godot Git repository clone URL
   GODOT_REPO_URL: https://github.com/godotengine/godot.git
 

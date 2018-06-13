@@ -59,7 +59,9 @@ else
   rsync -a "$CI_PROJECT_DIR"/modules/ "$GODOT_DIR/modules/"
 
   # Download the generated Mono glue from the last successful `generate:mono_glue` job
-  wget \
-      -q "https://gitlab.com/Calinou/godot-builds-ci/-/jobs/artifacts/master/raw/mono_glue.gen.cpp?job=generate:mono_glue" \
-      -O "$GODOT_DIR/modules/mono/glue/mono_glue.gen.cpp"
+  if [[ "$CI_JOB_NAME" != "generate:mono_glue" ]]; then
+    wget \
+        -q "https://gitlab.com/Calinou/godot-builds-ci/-/jobs/artifacts/master/raw/mono_glue.gen.cpp?job=generate:mono_glue" \
+        -O "$GODOT_DIR/modules/mono/glue/mono_glue.gen.cpp"
+  fi
 fi
