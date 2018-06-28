@@ -1,0 +1,138 @@
+{
+  "app-id": "org.godotengine.Godot",
+  "runtime": "org.freedesktop.Platform",
+  "runtime-version": "1.6",
+  "branch": "nightly",
+  "sdk": "org.freedesktop.Sdk",
+  "command": "godot",
+  "finish-args": [
+      /* X11 + XShm access */
+      "--share=ipc", "--socket=x11",
+      /* Network access */
+      "--share=network",
+      /* Sound access */
+      "--socket=pulseaudio",
+      /* We want full fs access so we can read the files */
+      "--filesystem=host",
+      "--device=all"
+  ],
+  "modules": [
+      {
+          "name": "scons",
+          "buildsystem": "simple",
+          "cleanup": [ "*" ],
+          "sources": [
+              {
+                  "type": "archive",
+                  "url": "https://downloads.sourceforge.net/project/scons/scons/3.0.1/scons-3.0.1.tar.gz",
+                  "sha256": "24475e38d39c19683bc88054524df018fe6949d70fbd4c69e298d39a0269f173"
+              }
+          ],
+          "build-commands": [ "python setup.py install --prefix=/app" ]
+      },
+      "shared-modules/glu/glu-9.0.0.json",
+      {
+          "name": "godot-tools",
+          "buildsystem": "simple",
+          "sources": [
+              {
+                  "type": "git",
+                  "url": "https://github.com/godotengine/godot.git"
+              }
+          ],
+          "build-options": {
+            "env": {
+                "BUILD_NAME": "calinou"
+            }
+          },
+          "build-commands": [
+              "scons platform=x11 \\
+                     CCFLAGS=-I/app/include \\
+                     prefix=/app \\
+                     unix_global_settings_path=/app \\
+                     -j `nproc` \\
+                     target=release_debug \\
+                     use_lto=no \\
+                     builtin_freetype=no \\
+                     builtin_libogg=no \\
+                     builtin_libpng=no \\
+                     builtin_libtheora=no \\
+                     builtin_libvorbis=no \\
+                     builtin_libwebp=no \\
+                     builtin_openssl=no \\
+                     builtin_libvpx=no \\
+                     builtin_zlib=no \\
+                     udev=no \\
+                     debug_symbols=no \\
+                     progress=no",
+              "install -D -m755 bin/godot.x11.opt.tools.* /app/bin/godot-bin",
+              "install -Dm644 icon.png /app/share/icons/hicolor/256x256/apps/org.godotengine.Godot.png"
+          ]
+      },
+      {
+          "name": "godot-release-template",
+          "buildsystem": "simple",
+          "sources": [
+              {
+                  "type": "git",
+                  "url": "https://github.com/godotengine/godot.git"
+              }
+          ],
+          "build-commands": [
+              "scons platform=x11 \\
+                     CCFLAGS=-I/app/include \\
+                     prefix=/app \\
+                     unix_global_settings_path=/app \\
+                     -j `nproc` \\
+                     tools=no \\
+                     target=release \\
+                     use_lto=no \\
+                     builtin_freetype=no \\
+                     builtin_libogg=no \\
+                     builtin_libpng=no \\
+                     builtin_libtheora=no \\
+                     builtin_libvorbis=no \\
+                     builtin_libwebp=no \\
+                     builtin_openssl=no \\
+                     builtin_libvpx=no \\
+                     builtin_zlib=no \\
+                     udev=no \\
+                     debug_symbols=no \\
+                     progress=no",
+              "install -D -m755 bin/godot.x11.opt.* /app/templates/linux_x11_`getconf LONG_BIT`_release"
+          ]
+      },
+      {
+          "name": "integration",
+          "buildsystem": "simple",
+          "sources": [
+              {
+                  "type": "file",
+                  "path": "org.godotengine.Godot.desktop"
+              },
+              {
+                  "type": "file",
+                  "path": "org.godotengine.Godot.png"
+              },
+              {
+                  "type": "file",
+                  "path": "org.godotengine.Godot.appdata.xml"
+              },
+              {
+                  "type": "script",
+                  "dest-filename": "godot.sh",
+                  "commands": [
+                      "export APPDATA=$XDG_DATA_HOME",
+                      "/app/bin/godot-bin"
+                  ]
+              }
+          ],
+          "build-commands": [
+              "install -D -m755 godot.sh /app/bin/godot",
+              "install -Dm644 org.godotengine.Godot.desktop /app/share/applications/org.godotengine.Godot.desktop",
+              "install -Dm644 org.godotengine.Godot.png /app/share/icons/hicolor/256x256/apps/org.godotengine.Godot.png",
+              "install -Dm644 org.godotengine.Godot.appdata.xml /app/share/appdata/org.godotengine.Godot.appdata.xml"
+          ]
+      }
+  ]
+}

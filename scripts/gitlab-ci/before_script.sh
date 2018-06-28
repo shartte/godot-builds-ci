@@ -23,19 +23,31 @@ else
   # Ubuntu
   apt-get update -yqq
   apt-get install -yqq software-properties-common
-  add-apt-repository -y ppa:ubuntu-toolchain-r/test
-  apt-get update -yqq
 
-  apt-get install -y git cmake wget zip unzip build-essential scons pkg-config \
-      libx11-dev libxcursor-dev libxinerama-dev libgl1-mesa-dev \
-      libglu-dev libasound2-dev libpulse-dev libfreetype6-dev \
-      libssl-dev libudev-dev libxrandr-dev libxi-dev yasm \
-      gcc-8 g++-8
+  if [[ "$CI_JOB_NAME" == "build:linux_editor_flatpak" ]]; then
+    add-apt-repository -y ppa:alexlarsson/flatpak
+    apt-get update -yqq
+
+    apt-get install -y git cmake wget zip unzip build-essential \
+        yasm flatpak-builder
+
+    # No need to clone the Godot Git repository when building a Flatpak since
+    # flatpak-builder does it already
+  else
+    add-apt-repository -y ppa:ubuntu-toolchain-r/test
+    apt-get update -yqq
+
+    apt-get install -y git cmake wget zip unzip build-essential scons pkg-config \
+        libx11-dev libxcursor-dev libxinerama-dev libgl1-mesa-dev \
+        libglu-dev libasound2-dev libpulse-dev libfreetype6-dev \
+        libssl-dev libudev-dev libxrandr-dev libxi-dev yasm \
+        gcc-8 g++-8
+
+    git clone --depth=1 "$GODOT_REPO_URL"
+    mkdir -p "$ARTIFACTS_DIR/editor" "$ARTIFACTS_DIR/templates"
+
+    # Copy user-supplied modules into the Godot directory
+    # (don't fail in case no modules are present)
+    cp "$CI_PROJECT_DIR"/modules/* "$GODOT_DIR/modules/" || true
+  fi
 fi
-
-git clone --depth=1 "$GODOT_REPO_URL"
-mkdir -p "$ARTIFACTS_DIR/editor" "$ARTIFACTS_DIR/templates"
-
-# Copy user-supplied modules into the Godot directory
-# (don't fail in case no modules are present)
-cp $CI_PROJECT_DIR/modules/* "$GODOT_DIR/modules/" || true

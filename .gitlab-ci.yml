@@ -15,7 +15,7 @@ variables:
   # This helps people identify where the build comes from
   BUILD_NAME: calinou
   # The number of CPU threads to use for compiling Godot
-  BUILD_THREADS: 3
+  BUILD_THREADS: "3"
   # SCons build flags to use for all platforms
   SCONS_FLAGS: debug_symbols=no progress=no -j$BUILD_THREADS
   # The Godot Git repository clone URL
@@ -23,7 +23,11 @@ variables:
 
 before_script:
   - "$CI_PROJECT_DIR/scripts/gitlab-ci/before_script.sh"
-  - cd "godot/"
+  - if [[ "$CI_JOB_NAME" == "build:linux_editor_flatpak" ]]; then
+  -   cd "resources/org.godotengine.Godot/";
+  - else
+  -   cd "godot/";
+  - fi
 
 after_script:
   - "$CI_PROJECT_DIR/scripts/gitlab-ci/after_script.sh"
@@ -35,6 +39,14 @@ build:linux_editor:
   image: ubuntu:trusty
   script:
     - "$CI_PROJECT_DIR/scripts/gitlab-ci/build/linux_editor.sh"
+
+# Linux editor (Flatpak)
+# Ubuntu 16.04 or newer is required to perform this build
+build:linux_editor_flatpak:
+  stage: build
+  image: ubuntu:xenial
+  script:
+    - "$CI_PROJECT_DIR/scripts/gitlab-ci/build/linux_editor_flatpak.sh"
 
 # Linux export templates
 # Built on Ubuntu 14.04 so that binaries run on old distributions as well
