@@ -57,6 +57,7 @@ build:linux_templates_debug:
   image: ubuntu:14.04
   variables:
     DEBIAN_FRONTEND: noninteractive
+    BUILD_THREADS: 1
   script:
     - "$CI_PROJECT_DIR/scripts/gitlab-ci/build/linux_templates.sh debug"
   artifacts: *artifacts
@@ -69,6 +70,7 @@ build:linux_templates_release:
   image: ubuntu:14.04
   variables:
     DEBIAN_FRONTEND: noninteractive
+    BUILD_THREADS: 1
   script:
     - "$CI_PROJECT_DIR/scripts/gitlab-ci/build/linux_templates.sh release"
   artifacts: *artifacts
@@ -138,10 +140,6 @@ build:android_release:
 build:windows_editor_64:
   stage: build
   image: fedora:29
-  variables:
-    # Use only 1 thread for building
-    # (required to compile LTO-enabled builds successfully)
-    BUILD_THREADS: "1"
   script:
     - '"$CI_PROJECT_DIR/scripts/gitlab-ci/build/windows_editor.sh" 64'
   artifacts: *artifacts
@@ -160,10 +158,6 @@ build:windows_editor_32:
 build:windows_templates_debug_64:
   stage: build
   image: fedora:29
-  variables:
-    # Use only 1 thread for building
-    # (required to compile LTO-enabled builds successfully)
-    BUILD_THREADS: "1"
   script:
     - '"$CI_PROJECT_DIR/scripts/gitlab-ci/build/windows_templates.sh" debug 64'
   artifacts: *artifacts
@@ -182,10 +176,6 @@ build:windows_templates_debug_32:
 build:windows_templates_release_64:
   stage: build
   image: fedora:29
-  variables:
-    # Use only 1 thread for building
-    # (required to compile LTO-enabled builds successfully)
-    BUILD_THREADS: "1"
   script:
     - '"$CI_PROJECT_DIR/scripts/gitlab-ci/build/windows_templates.sh" release 64'
   artifacts: *artifacts
